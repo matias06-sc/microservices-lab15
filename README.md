@@ -1,18 +1,18 @@
 ## Laboratorio de Microservicios (Día 1: Fundamentos + Entorno Docker / Git)
 
-[cite_start]Este documento resume las actividades y objetivos del **Día 1** del laboratorio práctico, enfocado en establecer la base teórica y el entorno de trabajo para una arquitectura de microservicios[cite: 7].
+Este documento resume las actividades y objetivos del **Día 1** del laboratorio práctico, enfocado en establecer la base teórica y el entorno de trabajo para una arquitectura de microservicios.
 
 ---
 
 ### 🎯 Objetivo General del Día 1
 
-[cite_start]Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días[cite: 9]. [cite_start]El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente[cite: 10].
+Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días[cite: 9]. [cite_start]El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente.
 
 ### 🎬 Bloque de Video de Referencia
 
-* [cite_start]**Video:** "Fundamentos + Docker + Git"[cite: 1].
-* [cite_start]**Enlace:** `https://www.youtube.com/watch?v=wj766sxHZrM&t=20s`[cite: 2].
-* [cite_start]**Duración a visualizar:** Desde el minuto **0:00** hasta el minuto **26:00**[cite: 4].
+* **Video:** "Fundamentos + Docker + Git"[cite: 1].
+* **Enlace:** `https://www.youtube.com/watch?v=wj766sxHZrM&t=20s`.
+* **Duración a visualizar:** Desde el minuto **0:00** hasta el minuto **26:00**.
 * **Temas obligatorios:**
     * [cite_start]Introducción, objetivos y qué son los microservicios (0:00 – 5:00)[cite: 6].
     * [cite_start]Principios: autonomía, acoplamiento, escalabilidad, observabilidad (5:00 – 10:00)[cite: 6].
