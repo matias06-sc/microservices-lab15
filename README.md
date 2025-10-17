@@ -1,4 +1,3 @@
-En README.md (raíz):
 # Laboratorio de Microservicios (Django + React)
 
 ## Arquitectura inicial
