@@ -10,7 +10,7 @@ Comprender qué es una arquitectura de microservicios y preparar el entorno de t
 
 ### 🎬 Bloque de Video de Referencia
 
-* **Video:** "Fundamentos + Docker + Git"[cite: 1].
+* **Video:** "Fundamentos + Docker + Git".
 * **Enlace:** `https://www.youtube.com/watch?v=wj766sxHZrM&t=20s`.
 * **Duración a visualizar:** Desde el minuto **0:00** hasta el minuto **26:00**.
 * **Temas obligatorios:**
@@ -21,7 +21,7 @@ Comprender qué es una arquitectura de microservicios y preparar el entorno de t
 
 ### 🧩 Conceptos a Dominar (Día 1)
 
-Al finalizar el día, se deben dominar los siguientes conceptos[cite: 11]:
+Al finalizar el día, se deben dominar los siguientes conceptos:
 * Diferencia entre monolito y microservicios.
 * Principios básicos: autonomía, responsabilidad única, acoplamiento flexible, escalabilidad y observabilidad.
 * Estructura de proyecto “multi-servicio”.
