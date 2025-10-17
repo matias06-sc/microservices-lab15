@@ -6,7 +6,7 @@ Este documento resume las actividades y objetivos del **Día 1** del laboratorio
 
 ### 🎯 Objetivo General del Día 1
 
-Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días[cite: 9]. [cite_start]El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente.
+Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días. El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente.
 
 ### 🎬 Bloque de Video de Referencia
 
