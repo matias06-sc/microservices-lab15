@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: db_blog_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: blog_db
+    ports:
+      - "5450:5432"
+    volumes:
+      - pgdata_blog:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: cache_blog_redis
+    restart: always
+    ports:
+      - "6381:6379"
+
+  blog:
+    build: ./blog-service
+    container_name: blog_service
+    restart: always
+    environment:
+      - DEBUG=1
+      - DB_HOST=postgres
+      - DB_NAME=blog_db
+      - DB_USER=devuser
+      - DB_PASS=devpass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8001:8001"
+
+volumes:
+  pgdata_blog:
