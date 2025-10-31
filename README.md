@@ -1,57 +1,169 @@
-## Laboratorio de Microservicios (Día 1: Fundamentos + Entorno Docker / Git)
+# 🧱 Día 3 — Backend: Blog Service
 
-Este documento resume las actividades y objetivos del **Día 1** del laboratorio práctico, enfocado en establecer la base teórica y el entorno de trabajo para una arquitectura de microservicios.
+Microservicio independiente desarrollado con **Django**, **MySQL**, **Redis** y **Docker**.  
+Forma parte del proyecto de microservicios (Días 1–3).
 
 ---
 
-### 🎯 Objetivo General del Día 1
+## 🚀 Características principales
 
-Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días. El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente.
+- **Framework:** Django 5 + Django REST Framework  
+- **Base de datos:** MySQL 8  
+- **Caché:** Redis 7  
+- **Contenedores:** Docker Compose  
+- **Middleware personalizado:** logging de peticiones  
+- **Endpoints REST:** categorías, autores y publicaciones  
+- **Healthcheck:** `/health/`  
+- **Seed de datos iniciales:** comando `python manage.py seed`
 
-### 🎬 Bloque de Video de Referencia
+---
 
-* **Video:** "Fundamentos + Docker + Git".
-* **Enlace:** `https://www.youtube.com/watch?v=wj766sxHZrM&t=20s`.
-* **Duración a visualizar:** Desde el minuto **0:00** hasta el minuto **26:00**.
-* **Temas obligatorios:**
-    * Introducción, objetivos y qué son los microservicios (0:00 – 5:00).
-    * Principios: autonomía, acoplamiento, escalabilidad, observabilidad (5:00 – 10:00).
-    * Instalación y configuración de Docker Desktop y Docker Compose (WSL2) (10:00 – 20:00).
-    * Configuración de Git y GitHub (ramas `Main` / `Staging`) (20:00 – 24:00).
+## 🧩 Estructura del proyecto
 
-### 🧩 Conceptos a Dominar (Día 1)
+```
 
-Al finalizar el día, se deben dominar los siguientes conceptos:
-* Diferencia entre monolito y microservicios.
-* Principios básicos: autonomía, responsabilidad única, acoplamiento flexible, escalabilidad y observabilidad.
-* Estructura de proyecto “multi-servicio”.
-* Uso de **Docker** + **Docker Compose** para levantar contenedores.
-* Control de versiones en **Git** (ramas `Main` y `Staging`).
+blog-service/
+│── blog_service/            ← configuración principal Django
+│── core/                    ← middleware y comandos personalizados
+│   └── management/commands/seed.py
+│── authors/                 ← modelo Author
+│── categories/              ← modelo Category
+│── posts/                   ← modelo Post
+│── Dockerfile
+│── docker-compose.yml
+│── requirements.txt
+│── manage.py
+│── .env.example
+│── README.md
 
-### 🛠️ Tareas Prácticas Paso a Paso
+````
 
-1.  **Crear la estructura base del proyecto**:
-    * Crear la carpeta principal: `mkdir microservices-lab`.
-    * Crear las carpetas para los servicios: `mkdir auth-service blog-service email-service frontend reverse-proxy`.
-    * Crear un `README.md` vacío dentro de cada carpeta.
-2.  **Inicializar Git y GitHub**:
-    * Inicializar el repositorio local y el *commit* inicial.
-    * Vincular el repo remoto y hacer el *push* a la rama `main`.
-3.  **Preparar el entorno Docker Compose**:
-    * Crear el archivo **`docker-compose.yml`** en la raíz.
-    * Configurar los servicios **`postgres`** (puerto 5432) y **`redis`** (puerto 6379).
-    * Ejecutar `docker compose up -d` y verificar con `docker ps`.
-4.  **Crear archivos de entorno**:
-    * Crear el archivo **`.env.example`** con las variables de conexión a PostgreSQL y Redis.
-    * Cada equipo debe copiarlo a **`.env`** local.
-5.  **Registrar en README el diseño inicial**:
-    * Documentar en el `README.md` de la raíz la **Arquitectura inicial** de los microservicios y los **Servicios base** (PostgreSQL y Redis).
+---
 
-### 📦 Entregables del Día 1
+## ⚙️ Variables de entorno (.env)
 
-| Entregable | Descripción |
-| :--- | :--- |
-| **Repo Git** | Subido a GitHub con estructura base y `.env.example`. |
-| **Docker Compose funcional** | Levanta PostgreSQL y Redis sin errores. |
-| **README documentado** | Incluye arquitectura y checklist. |
-| **Captura o video corto** | Mostrando los contenedores en ejecución (`docker ps`).
+Ejemplo:
+
+```bash
+DB_HOST=mysql
+DB_NAME=blogdb
+DB_USER=devuser
+DB_PASS=devpass
+REDIS_HOST=redis
+REDIS_PORT=6379
+DEBUG=1
+````
+
+---
+
+## 🐳 Cómo ejecutar el microservicio
+
+1️⃣ **Construir y levantar contenedores**
+
+```bash
+docker compose up -d --build
+```
+
+2️⃣ **Aplicar migraciones**
+
+```bash
+docker compose exec blog python manage.py makemigrations
+docker compose exec blog python manage.py migrate
+```
+
+3️⃣ **Cargar datos iniciales**
+
+```bash
+docker compose exec blog python manage.py seed
+```
+
+4️⃣ **Verificar contenedores**
+
+```bash
+docker ps
+```
+
+---
+
+## 🔍 Endpoints principales
+
+| Recurso     | Método                    | URL                | Descripción                           |
+| ----------- | ------------------------- | ------------------ | ------------------------------------- |
+| Healthcheck | GET                       | `/health/`         | Comprueba disponibilidad del servicio |
+| Categorías  | GET / POST / PUT / DELETE | `/api/categories/` | CRUD de categorías                    |
+| Autores     | GET / POST / PUT / DELETE | `/api/authors/`    | CRUD de autores                       |
+| Posts       | GET / POST / PUT / DELETE | `/api/posts/`      | CRUD de publicaciones                 |
+
+---
+
+## 🧠 Middleware de logging
+
+Archivo: `core/middleware.py`
+
+```python
+class RequestLogMiddleware:
+    def __call__(self, request):
+        start = time.time()
+        response = self.get_response(request)
+        elapsed = time.time() - start
+        logger.info(f"{request.method} {request.path} ({elapsed:.2f}s)")
+        return response
+```
+
+Registra el tiempo de ejecución de cada petición en los logs del servidor.
+
+---
+
+## 🗄️ Seed de datos iniciales
+
+Archivo: `core/management/commands/seed.py`
+
+Crea registros de ejemplo para `Category`, `Author` y `Post`.
+
+Ejecutar:
+
+```bash
+docker compose exec blog python manage.py seed
+```
+
+---
+
+## 📦 Comandos útiles
+
+```bash
+# Detener todos los servicios
+docker compose down
+
+# Reiniciar solo el contenedor Django
+docker compose restart blog
+
+# Ver logs en vivo
+docker compose logs -f blog
+```
+
+---
+
+## 🧾 Versión del proyecto
+
+**Día 3 — Backend Blog Service**
+Microservicio funcional con Redis + MySQL + Docker.
+Rama: `feature/blog-service`
+
+---
+
+## 👨‍💻 Autor
+
+Desarrollado por **Matías Sicha & Edgar** — Proyecto de Microservicios
+Período: *Día 3 – Backend (todas las salas excepto Sala 4)*
+
+````
+
+---
+
+✅ Luego solo guarda el archivo y ejecuta:
+
+```bash
+git add README.md
+git commit -m "Agregar README del Día 3"
+git push
+````
