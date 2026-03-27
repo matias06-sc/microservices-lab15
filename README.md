@@ -1,57 +1,53 @@
-## Laboratorio de Microservicios (Día 1: Fundamentos + Entorno Docker / Git)
+# 🚀 DÍA 2: Microservicio Backend Auth
 
-Este documento resume las actividades y objetivos del **Día 1** del laboratorio práctico, enfocado en establecer la base teórica y el entorno de trabajo para una arquitectura de microservicios.
+## 🎯 Objetivo General
 
----
+Construir un **microservicio de autenticación** (`auth-service`) completamente independiente. Este servicio debe ser capaz de manejar:
+1.  Registro de usuarios, login y gestión de **tokens JWT**.
+2.  Correr en su propio **contenedor Docker**.
+3.  Conectarse a **PostgreSQL** (persistencias) y **Redis** (cache/sesiones).
 
-### 🎯 Objetivo General del Día 1
+## 🧠 Conceptos Clave a Aplicar
 
-Comprender qué es una arquitectura de microservicios y preparar el entorno de trabajo para los siguientes días. El grupo debe terminar el día con una base funcional en **Docker Compose**, donde cada servicio puede ser levantado de forma independiente.
+* **Autenticación basada en JWT** (JSON Web Tokens).
+* Estructura de un servicio Django aislado.
+* Configuración de **variables de entorno** y dependencias.
+* **Cacheo y sesiones con Redis**.
+* Comunicación segura entre servicios vía API.
 
-### 🎬 Bloque de Video de Referencia
+## 🛠️ Estructura del Proyecto
 
-* **Video:** "Fundamentos + Docker + Git".
-* **Enlace:** `https://www.youtube.com/watch?v=wj766sxHZrM&t=20s`.
-* **Duración a visualizar:** Desde el minuto **0:00** hasta el minuto **26:00**.
-* **Temas obligatorios:**
-    * Introducción, objetivos y qué son los microservicios (0:00 – 5:00).
-    * Principios: autonomía, acoplamiento, escalabilidad, observabilidad (5:00 – 10:00).
-    * Instalación y configuración de Docker Desktop y Docker Compose (WSL2) (10:00 – 20:00).
-    * Configuración de Git y GitHub (ramas `Main` / `Staging`) (20:00 – 24:00).
+El microservicio se encuentra dentro de la carpeta `auth-service/`.
 
-### 🧩 Conceptos a Dominar (Día 1)
+### 📄 Pasos Esenciales
 
-Al finalizar el día, se deben dominar los siguientes conceptos:
-* Diferencia entre monolito y microservicios.
-* Principios básicos: autonomía, responsabilidad única, acoplamiento flexible, escalabilidad y observabilidad.
-* Estructura de proyecto “multi-servicio”.
-* Uso de **Docker** + **Docker Compose** para levantar contenedores.
-* Control de versiones en **Git** (ramas `Main` y `Staging`).
+1.  **Estructura Base:** Crear el proyecto Django y la app `users` dentro de `auth-service/`.
+2.  **Dockerfile:** Definir el proceso de construcción del contenedor, incluyendo la imagen base (`python:3.11`), la instalación de dependencias y el comando `gunicorn` para arrancar el servicio en el **puerto 8000**.
+3.  **Docker Compose:** Extender `docker-compose.yml` en la raíz del proyecto para añadir el servicio `auth`.Debe establecer las variables de entorno de la base de datos y Redis, y declarar `depends_on: [postgres, redis]`.
+4.  **Dependencias (requirements.txt):** Instalar Django, Django REST Framework, `djangorestframework-simplejwt`, `psycopg2-binary`, `redis`, y `django-cors-headers`.
+5.  **Configuración (`settings.py`):**
+    * Añadir `rest_framework`, `corsheaders`, y la app `users` a `INSTALLED_APPS`.
+    * Configurar `DATABASES` y `CACHES` (usando Redis) con variables de entorno.
+    * Definir `REST_FRAMEWORK` para usar `JWTAuthentication`.
+6.  **Modelo de Usuario:** Crear un modelo de usuario personalizado (`users/models.py`) que herede de `AbstractBaseUser` y use el `email` como `USERNAME_FIELD`. Registrar en `settings.py` con `AUTH_USER_MODEL = 'users.User'`.
+7.  **Endpoints JWT:** Configurar las rutas para **Login**, **Token Refresh** y el endpoint para **Registro** (`/api/register/`).
 
-### 🛠️ Tareas Prácticas Paso a Paso
+### 🧪 Pruebas y Endpoints (Postman)
 
-1.  **Crear la estructura base del proyecto**:
-    * Crear la carpeta principal: `mkdir microservices-lab`.
-    * Crear las carpetas para los servicios: `mkdir auth-service blog-service email-service frontend reverse-proxy`.
-    * Crear un `README.md` vacío dentro de cada carpeta.
-2.  **Inicializar Git y GitHub**:
-    * Inicializar el repositorio local y el *commit* inicial.
-    * Vincular el repo remoto y hacer el *push* a la rama `main`.
-3.  **Preparar el entorno Docker Compose**:
-    * Crear el archivo **`docker-compose.yml`** en la raíz.
-    * Configurar los servicios **`postgres`** (puerto 5432) y **`redis`** (puerto 6379).
-    * Ejecutar `docker compose up -d` y verificar con `docker ps`.
-4.  **Crear archivos de entorno**:
-    * Crear el archivo **`.env.example`** con las variables de conexión a PostgreSQL y Redis.
-    * Cada equipo debe copiarlo a **`.env`** local.
-5.  **Registrar en README el diseño inicial**:
-    * Documentar en el `README.md` de la raíz la **Arquitectura inicial** de los microservicios y los **Servicios base** (PostgreSQL y Redis).
+Se deben probar los siguientes endpoints para verificar la funcionalidad:
 
-### 📦 Entregables del Día 1
+| Método | Ruta | Descripción |
+| :--- | :--- | :--- |
+| `POST` | `/api/register/` | Crea un nuevo usuario. |
+| `POST` | `/api/token/` | Genera `access` y `refresh` tokens al loguearse. |
+| `POST` | `/api/token/refresh/` | Renueva el token de acceso. |
 
-| Entregable | Descripción |
-| :--- | :--- |
-| **Repo Git** | Subido a GitHub con estructura base y `.env.example`. |
-| **Docker Compose funcional** | Levanta PostgreSQL y Redis sin errores. |
-| **README documentado** | Incluye arquitectura y checklist. |
-| **Captura o video corto** | Mostrando los contenedores en ejecución (`docker ps`).
+🎯 ### Entrar a Admin:
+URL: http://127.0.0.1:8000/admin/
+email: matias@example.com
+contraseña: mat123
+
+**Verificación de Conexión:**
+Se puede verificar la conexión a la base de datos y Redis ejecutando un *shell* dentro del contenedor:
+```bash
+docker exec -it auth_service python manage.py shell

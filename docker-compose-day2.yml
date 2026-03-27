@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  postgres_day2:
+    image: postgres:15
+    container_name: db_postgres_day2
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: main_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_day2:/var/lib/postgresql/data
+
+  redis_day2:
+    image: redis:7
+    container_name: cache_redis_day2
+    ports:
+      - "6380:6379"
+
+  auth_day2:
+    build: ./auth-service
+    container_name: auth_service_day2
+    depends_on:
+      - postgres_day2
+      - redis_day2
+    environment:
+      - DEBUG=1
+      - DB_HOST=postgres_day2
+      - DB_NAME=main_db
+      - DB_USER=devuser
+      - DB_PASS=devpass
+      - REDIS_HOST=redis_day2
+      - REDIS_PORT=6379
+    ports:
+      - "8001:8000"
+
+volumes:
+  pgdata_day2:
